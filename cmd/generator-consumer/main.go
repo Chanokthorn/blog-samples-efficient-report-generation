@@ -6,6 +6,7 @@ import (
 	"github.com/Chanokthorn/blog-samples-efficient-report-generation/internal"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -39,10 +40,15 @@ func main() {
 		panic(err)
 	}
 
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+	})
+
 	jobRepository := internal.NewJobRepository(mongoClient.Database("report").Collection("job"))
+	jobDonePublisher := internal.NewJobDonePublisher(redisClient)
 	reportGenerator := internal.NewReportGenerator()
 
-	consumer := internal.NewConsumer(rabbitMQChannel, jobRepository, reportGenerator)
+	consumer := internal.NewConsumer(rabbitMQChannel, jobRepository, reportGenerator, jobDonePublisher)
 
 	consumer.Consume()
 }

@@ -7,20 +7,23 @@ import (
 )
 
 type Consumer struct {
-	channel         *amqp.Channel
-	jobRepository   *JobRepository
-	reportGenerator *ReportGenerator
+	channel          *amqp.Channel
+	jobRepository    *JobRepository
+	reportGenerator  *ReportGenerator
+	jobDonePublisher *JobDonePublisher
 }
 
 func NewConsumer(
 	channel *amqp.Channel,
 	jobRepository *JobRepository,
 	reportGenerator *ReportGenerator,
+	jobDonePublisher *JobDonePublisher,
 ) *Consumer {
 	return &Consumer{
-		channel: channel,
-		jobRepository: jobRepository,
-		reportGenerator: reportGenerator,
+		channel:          channel,
+		jobRepository:    jobRepository,
+		reportGenerator:  reportGenerator,
+		jobDonePublisher: jobDonePublisher,
 	}
 }
 
@@ -55,6 +58,13 @@ func (c *Consumer) Consume() {
 			err = c.jobRepository.UpdateJobDone(job.ID, report)
 			if err != nil {
 				log.Printf("failed to update job: %v", err)
+				continue
+			}
+
+			// publish job done event
+			err = c.jobDonePublisher.PublishJobDone(job.ID)
+			if err != nil {
+				log.Printf("failed to publish job done: %v", err)
 				continue
 			}
 		}

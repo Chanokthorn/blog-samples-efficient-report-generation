@@ -1,7 +1,9 @@
 package internal
 
 import (
+	"context"
 	"strconv"
+	"time"
 
 	"github.com/Chanokthorn/blog-samples-efficient-report-generation/internal/domain"
 
@@ -11,17 +13,20 @@ import (
 
 type APIHandler struct {
 	// reportGenerator *ReportGenerator <<< removed from api handler, used by consumer instead
-	jobPublisher  *JobPublisher
-	jobRepository *JobRepository
+	jobPublisher   *JobPublisher
+	jobRepository  *JobRepository
+	jobDoneManager *JobDoneManager
 }
 
 func NewAPIHandler(
 	jobPublisher *JobPublisher,
 	jobRepository *JobRepository,
+	jobDoneManager *JobDoneManager,
 ) *APIHandler {
 	return &APIHandler{
-		jobPublisher:  jobPublisher,
-		jobRepository: jobRepository,
+		jobPublisher:   jobPublisher,
+		jobRepository:  jobRepository,
+		jobDoneManager: jobDoneManager,
 	}
 }
 
@@ -31,12 +36,6 @@ func (h *APIHandler) GenerateReport(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "invalid previous_days parameter"})
 		return
 	}
-
-	// report, err := ah.reportGenerator.GenerateReport(uint64(previousDays))
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": "failed to generate report"})
-	// 	return
-	// }
 
 	jobID := uuid.New().String()
 
@@ -59,7 +58,29 @@ func (h *APIHandler) GenerateReport(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{"jobID": jobID})
+	done, cancelRegistration := h.jobDoneManager.Register(jobID)
+
+	// create context with timeout to limit wait time for asynchronous response
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*3)
+
+	select {
+	// if job is done within 3 seconds, query result and send within api
+	case <-done:
+		// get job from database
+		newJob, err := h.jobRepository.FindJobByID(jobID)
+		if err != nil {
+			c.JSON(500, gin.H{"error": "failed to find job"})
+			return
+		}
+		c.JSON(200, gin.H{"report": newJob.Content})
+	// if job is not done within 3 seconds, sends job ID for front end for later query
+	case <-ctx.Done():
+		cancelRegistration()
+		c.JSON(200, gin.H{
+			"status": "processing",
+			"jobID":  jobID,
+		})
+	}
 }
 
 func (h *APIHandler) GetReport(c *gin.Context) {
