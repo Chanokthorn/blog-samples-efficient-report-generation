@@ -4,20 +4,6 @@ import (
 	"time"
 )
 
-const (
-	smallReportJSON = `{
-		"id": 1,
-		"title": "Small Report",
-		"content": "This is a small mock report."
-	}`
-
-	largeReportJSON = `{
-		"id": 2,
-		"title": "Large Report",
-		"content": "This is a large mock report with a lot of content..."
-	}`
-)
-
 type Report struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
