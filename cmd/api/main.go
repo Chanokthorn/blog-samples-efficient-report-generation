@@ -12,7 +12,7 @@ func main() {
 	reportGenerator := internal.NewReportGenerator()
 	apiHandler := internal.NewAPIHandler(reportGenerator)
 
-	server.GET("/", apiHandler.GetReport)
+	server.POST("/", apiHandler.GetReport)
 
 	server.Run(":3000")
 }
