@@ -1,6 +1,9 @@
 # Sample Repository for Efficient Report Generation: Separating Generation Task to a Consumer Service
 
+![3D89DB75-68F6-467B-BE14-573FCAD4C42D_4_5005_c](https://github.com/user-attachments/assets/19d4aa1a-0b96-4c9c-ad5b-8a6cac547200)
+
 This repository serves as a sample for a series of Medium blogs
+
 1. [Efficiently Handling Both Fast and Slow Report Generation in Golang — Part 1: Separating Generation Task to a Consumer Service](https://medium.com/@chanokthorn6/efficiently-handling-both-fast-and-slow-report-generation-in-golang-part-1-the-problem-e83b1fa37f2b).
 2. Report Generation Job Done Notification With Redis PubSub (stay tuned...)
 
@@ -11,10 +14,15 @@ Feel free to explore the code and accompanying documentation to gain insights in
 
 ## Table of Contents
 
+- [Architecture](#architecture)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Architecture
+
+![image](https://github.com/user-attachments/assets/f9137506-ab1f-4f75-a62c-0f25ff2f0197)
 
 ## Installation
 
