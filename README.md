@@ -1,4 +1,5 @@
 # Sample Repository for Efficient Report Generation: Basic Approach
+![3D89DB75-68F6-467B-BE14-573FCAD4C42D_4_5005_c](https://github.com/user-attachments/assets/f46f58cb-0519-41f4-89a9-c10953a1cd30)
 
 This repository serves as a sample for a series of Medium blogs
 1. [Efficiently Handling Both Fast and Slow Report Generation in Golang — Part 1: Separating Generation Task to a Consumer Service](https://medium.com/@chanokthorn6/efficiently-handling-both-fast-and-slow-report-generation-in-golang-part-1-the-problem-e83b1fa37f2b).
@@ -11,10 +12,15 @@ Feel free to explore the code and accompanying documentation to gain insights in
 
 ## Table of Contents
 
+- [Architecture](#architecture)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Architecture
+
+![image](https://github.com/user-attachments/assets/a2d3ddee-a531-4f05-8eab-9c23be695dfc)
 
 ## Installation
 
