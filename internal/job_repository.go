@@ -28,7 +28,7 @@ func (jr *JobRepository) FindJobByID(id string) (domain.Job, error) {
 	return job, err
 }
 
-func (jr *JobRepository) UpdateJobDone(id string, content any) error {
-	_, err := jr.collection.UpdateOne(context.Background(), bson.M{"id": id}, bson.M{"$set": bson.M{"done": true, "content": content}})
+func (jr *JobRepository) UpdateJobDone(id string, report any) error {
+	_, err := jr.collection.UpdateOne(context.Background(), bson.M{"id": id}, bson.M{"$set": bson.M{"done": true, "report": report}})
 	return err
 }

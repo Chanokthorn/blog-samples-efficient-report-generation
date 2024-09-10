@@ -32,6 +32,7 @@ func (h *APIHandler) GenerateReport(c *gin.Context) {
 		return
 	}
 
+	// instead of generating the report here, we will publish a job to the queue
 	// report, err := ah.reportGenerator.GenerateReport(uint64(previousDays))
 	// if err != nil {
 	// 	c.JSON(500, gin.H{"error": "failed to generate report"})
@@ -42,9 +43,8 @@ func (h *APIHandler) GenerateReport(c *gin.Context) {
 
 	// insert a job to database for later update
 	job := domain.Job{
-		ID:           jobID,
-		PreviousDays: uint64(previousDays),
-		Done:         false,
+		ID:   jobID,
+		Done: false,
 	}
 
 	err = h.jobRepository.InsertJob(job)
@@ -53,7 +53,10 @@ func (h *APIHandler) GenerateReport(c *gin.Context) {
 	}
 
 	// instead of generating the report, publish a job to the queue
-	err = h.jobPublisher.PublishJob(jobID)
+	err = h.jobPublisher.PublishJob(domain.JobMessage{
+		JobID:        jobID,
+		PreviousDays: uint64(previousDays),
+	})
 	if err != nil {
 		c.JSON(500, gin.H{"error": "failed to publish job"})
 		return
@@ -73,7 +76,7 @@ func (h *APIHandler) GetReport(c *gin.Context) {
 
 	// return report if job is done
 	if job.Done {
-		c.JSON(200, gin.H{"report": job.Content})
+		c.JSON(200, gin.H{"report": job.Report})
 		return
 	}
 

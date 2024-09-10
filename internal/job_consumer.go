@@ -1,7 +1,10 @@
 package internal
 
 import (
+	"encoding/json"
 	"log"
+
+	"github.com/Chanokthorn/blog-samples-efficient-report-generation/internal/domain"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -18,8 +21,8 @@ func NewConsumer(
 	reportGenerator *ReportGenerator,
 ) *Consumer {
 	return &Consumer{
-		channel: channel,
-		jobRepository: jobRepository,
+		channel:         channel,
+		jobRepository:   jobRepository,
 		reportGenerator: reportGenerator,
 	}
 }
@@ -37,22 +40,23 @@ func (c *Consumer) Consume() {
 
 	go func() {
 		for msg := range msgs {
-			// get job from database
-			job, err := c.jobRepository.FindJobByID(string(msg.Body))
+			// parse job message
+			var jobMessage domain.JobMessage
+			err := json.Unmarshal(msg.Body, &jobMessage)
 			if err != nil {
-				log.Printf("failed to find job: %v", err)
+				log.Printf("failed to parse job message: %v", err)
 				continue
 			}
 
 			// generate report based on job
-			report, err := c.reportGenerator.GenerateReport(job.PreviousDays)
+			report, err := c.reportGenerator.GenerateReport(jobMessage.PreviousDays)
 			if err != nil {
 				log.Printf("failed to generate report: %v", err)
 				continue
 			}
 
 			// update job status to done with the report
-			err = c.jobRepository.UpdateJobDone(job.ID, report)
+			err = c.jobRepository.UpdateJobDone(jobMessage.JobID, report)
 			if err != nil {
 				log.Printf("failed to update job: %v", err)
 				continue
