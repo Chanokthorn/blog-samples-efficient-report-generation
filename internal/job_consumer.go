@@ -66,7 +66,7 @@ func (c *Consumer) Consume() {
 			}
 
 			// publish job done event
-			err = c.jobDonePublisher.PublishJobDone(job.ID)
+			err = c.jobDonePublisher.PublishJobDone(jobMessage.JobID)
 			if err != nil {
 				log.Printf("failed to publish job done: %v", err)
 				continue
