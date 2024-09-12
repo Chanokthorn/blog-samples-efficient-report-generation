@@ -4,7 +4,7 @@
 
 This repository serves as a sample for a series of Medium blogs
 
-1. [Efficiently Handling Both Fast and Slow Report Generation in Golang — Part 1: Separating Generation Task to a Consumer Service](https://medium.com/@chanokthorn6/efficiently-handling-both-fast-and-slow-report-generation-in-golang-part-1-the-problem-e83b1fa37f2b).
+1. [Efficiently Handling Both Fast and Slow Report Generation in Golang — Part 1: Separating Generation Task to a Consumer Service](https://medium.com/@chanokthorn6/efficiently-handling-both-fast-and-slow-report-generation-in-golang-part-1-the-problem-e83b1fa37f2b)
 2. Report Generation Job Done Notification With Redis PubSub (stay tuned...)
 
 
@@ -30,6 +30,10 @@ Feel free to explore the code and accompanying documentation to gain insights in
 2. Install the required dependencies by running `go mod tidy`.
 
 ## Usage
+Set up RabbitMQ and MongoDB with docker-compose
+```
+docker-compose up
+```
 Runing API Server
 ```
 go run cmd/api/main.go
