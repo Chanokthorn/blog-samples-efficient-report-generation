@@ -65,6 +65,14 @@ using APIs
     }
 }
 ```
+### Demo
+Fast report generation: returning report with response:
+![short-demo](https://github.com/user-attachments/assets/5453e84e-d109-44d7-a34f-70a9b3fcf3d8)
+
+Slow report generation: returning job ID in response for querying later:
+![long-generate-demo](https://github.com/user-attachments/assets/b22a6fac-1228-4c07-9f16-951f28b4ed23)
+
+![long-get-demo](https://github.com/user-attachments/assets/00c0b3c4-4082-4997-9688-6ec33b37c097)
 
 This will start the application and generate sample reports based on the provided data.
 
